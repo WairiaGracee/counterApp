@@ -1,32 +1,49 @@
+import React, { useState } from 'react';
+import TodoList from './todoList';
 import './App.css';
 
 function App() {
+  const [task, setTask] = useState('');
+  const [tasks, setTasks] = useState([]);
 
-  
+  const handleChange = (e) => {
+    setTask(e.target.value);
+  };
+
+  const handleAdd = () => {
+    if (task.trim() !== '') {
+      setTasks([...tasks, { text: task, completed: false }]);
+      setTask('');
+    }
+  };
+
+  const toggleComplete = (index) => {
+    const newTasks = [...tasks];
+    newTasks[index].completed = !newTasks[index].completed;
+    setTasks(newTasks);
+  };
+
+  const handleDelete = (index) => {
+    const newTasks = tasks.filter((_, i) => i !== index);
+    setTasks(newTasks);
+  };
+
   return (
-    <div className="app-container">
+    <div className="App">
       <h1>To-Do List</h1>
-
-      <div className="input-section">
-        <input type="text" placeholder="Enter a new task..." />
-        <button>Add Task</button>
+      <div className="input-area">
+        <input
+          type="text"
+          value={task}
+          onChange={handleChange}
+          placeholder="Add a task..."
+        />
+        <button onClick={handleAdd}>Add</button>
       </div>
-
-      <ul className="task-list">
-        {/* Sample Task Item */}
-        <li className="task-item">
-          <span className="task-text">Sample Task</span>
-          <div className="task-actions">
-            <button className="complete-btn">Complete</button>
-            <button className="delete-btn">Delete</button>
-          </div>
-        </li>
-      </ul>
-
-      {/* Optional Clear All Button */}
-      <button className="clear-btn">Clear All</button>
+      <TodoList tasks={tasks} onToggle={toggleComplete} onDelete={handleDelete} />
     </div>
   );
 }
 
 export default App;
+
